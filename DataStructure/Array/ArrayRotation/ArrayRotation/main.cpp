@@ -112,7 +112,7 @@ void RotationUsingJugglingAlgorithm(int *arr, unsigned int length, const int num
 	}
 	else if (type == ROTATION_TYPE::RIGHT_ROTATION) {
 		for (unsigned int i = 0; i < gcd; i++) {
-			int temp = arr[length -1 - i];	//holding the value temporarily 
+			int temp = arr[length - 1 - i];	//holding the value temporarily 
 			int j = length - 1 - i;
 
 			while (1) {
@@ -133,6 +133,53 @@ void RotationUsingJugglingAlgorithm(int *arr, unsigned int length, const int num
 	else {
 		std::cout << "UNDEFINED rotation type is selected" << std::endl;
 	}
+
+}
+
+void ReverseArray(int *arr, unsigned int start, unsigned int end) {
+	while (start < end) {
+		int temp = arr[start];
+		arr[start] = arr[end];
+		arr[end] = temp;
+		start++;
+		end--;
+	}
+}
+
+void RotationUsingReversalAlgorithm(int *arr, unsigned int length, const int num_of_element_to_rotate, ROTATION_TYPE type) {
+	/*
+	This is For Left Rotation
+	Let AB are the two parts of the input array where A = arr[0..d-1] and B = arr[d..n-1]. The idea of the algorithm is :
+	Reverse A to get ArB, where Ar is reverse of A.
+	Reverse B to get ArBr, where Br is reverse of B.
+	Reverse all to get (ArBr) r = BA.
+
+	Right rotation is the vice versa of this method
+	*/
+
+	if (type == ROTATION_TYPE::LEFT_ROTATION) {
+		ReverseArray(arr, 0, num_of_element_to_rotate - 1);
+		//PrintArray(arr, length);
+
+		ReverseArray(arr, num_of_element_to_rotate, length - 1);
+		//PrintArray(arr, length);
+
+		ReverseArray(arr, 0, length - 1);
+		//PrintArray(arr, length);
+	}
+	else if (type == ROTATION_TYPE::RIGHT_ROTATION) {
+		ReverseArray(arr, length - num_of_element_to_rotate, length-1);
+		//PrintArray(arr, length);
+
+		ReverseArray(arr, 0, length - num_of_element_to_rotate - 1);
+		//PrintArray(arr, length);
+
+		ReverseArray(arr, 0, length - 1);
+		//PrintArray(arr, length);
+	}else {
+		std::cout << "UNDEFINED rotation type is selected" << std::endl;
+	}
+
 
 }
 
@@ -177,6 +224,16 @@ int main() {
 	PrintArray(arr_1, arr_length);
 	std::cout << "Right Rotation" << std::endl;
 	RotationUsingJugglingAlgorithm(arr_1, arr_length, number_of_element_to_rotate, ROTATION_TYPE::RIGHT_ROTATION);
+	PrintArray(arr_1, arr_length);
+
+	std::cout << "The input Array is: " << std::endl;
+	PrintArray(arr_1, arr_length);
+	std::cout << "Rotate Using Reversal Algorithm" << std::endl;
+	std::cout << "Left Rotation" << std::endl;
+	RotationUsingReversalAlgorithm(arr_1, arr_length, 3, ROTATION_TYPE::LEFT_ROTATION);
+	PrintArray(arr_1, arr_length);
+	std::cout << "Right Rotation" << std::endl;
+	RotationUsingReversalAlgorithm(arr_1, arr_length, 3, ROTATION_TYPE::RIGHT_ROTATION);
 	PrintArray(arr_1, arr_length);
 
 	system("pause");
