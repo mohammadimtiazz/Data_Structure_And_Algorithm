@@ -18,7 +18,7 @@ void RotationUsingTempArray(int *arr, unsigned int length, const int num_of_elem
 
 	if (type == ROTATION_TYPE::LEFT_ROTATION) {
 		//created a temp array with the number of element to shift
-		for (unsigned int i = 0; i < num_of_element_to_rotate; i++) {
+		for (unsigned int i = 0; i < (unsigned int)num_of_element_to_rotate; i++) {
 			temp_arr[i] = arr[i];
 		}
 
@@ -28,7 +28,7 @@ void RotationUsingTempArray(int *arr, unsigned int length, const int num_of_elem
 		}
 
 		//pass rest of the value from temp array
-		for (unsigned int i = 0; i < num_of_element_to_rotate; i++) {
+		for (unsigned int i = 0; i < (unsigned int)num_of_element_to_rotate; i++) {
 			arr[length - num_of_element_to_rotate + i] = temp_arr[i];
 		}
 	}
@@ -41,11 +41,11 @@ void RotationUsingTempArray(int *arr, unsigned int length, const int num_of_elem
 		}
 
 		//Move rest of the array to Right
-		for (unsigned int i = length - 1; i >= num_of_element_to_rotate; i--) {
+		for (unsigned int i = length - 1; i >= (unsigned int)num_of_element_to_rotate; i--) {
 			arr[i] = arr[i - num_of_element_to_rotate];
 		}
 
-		for (unsigned int i = 0; i < num_of_element_to_rotate; i++) {
+		for (unsigned int i = 0; i < (unsigned int)num_of_element_to_rotate; i++) {
 			arr[i] = temp_arr[i];
 		}
 	}
@@ -64,12 +64,71 @@ void RotateOneByOne(int *arr, unsigned int length, ROTATION_TYPE type) {
 		}
 		arr[length - 1] = temp;
 	}
-	else if (type == ROTATION_TYPE::RIGHT_ROTATION){
+	else if (type == ROTATION_TYPE::RIGHT_ROTATION) {
 		int temp = arr[length - 1];
-		for (unsigned int i = length-1; i >= 1; i--) {
-			arr[i] = arr[i -1];
+		for (unsigned int i = length - 1; i >= 1; i--) {
+			arr[i] = arr[i - 1];
 		}
 		arr[0] = temp;
+	}
+	else {
+		std::cout << "UNDEFINED rotation type is selected" << std::endl;
+	}
+
+}
+
+int GreatestCommonDivisor(int a, int b) {
+	if (b == 0)
+		return a;
+	else
+		return GreatestCommonDivisor(b, a%b);
+
+}
+
+//For more details of this algorithm check the following link
+//https://www.geeksforgeeks.org/array-rotation/
+void RotationUsingJugglingAlgorithm(int *arr, unsigned int length, const int num_of_element_to_rotate, ROTATION_TYPE type) {
+	unsigned int gcd = GreatestCommonDivisor(length, num_of_element_to_rotate);
+
+	if (type == ROTATION_TYPE::LEFT_ROTATION) {
+		for (unsigned int i = 0; i < gcd; i++) {
+			int temp = arr[i];	//holding the value temporarily 
+			unsigned int j = i;
+
+			while (1) {
+				//if j hit the last line the break the while loop
+				if (j >= length)
+					break;
+				//if j about to hit the last change in the array then replace with the temp value
+				if (j + gcd > length - 1) {
+					arr[j] = temp;
+				}
+				else
+					arr[j] = arr[j + gcd];	//else swap with gcd distance
+				j = j + gcd;
+			}
+			//PrintArray(arr, length);	//for debugging
+		}
+	}
+	else if (type == ROTATION_TYPE::RIGHT_ROTATION) {
+		for (unsigned int i = 0; i < gcd; i++) {
+			int temp = arr[length -1 - i];	//holding the value temporarily 
+			int j = length - 1 - i;
+
+			while (1) {
+				//if j hit the beginning line the break the while loop
+				if (j < 0)
+					break;
+				//if j about to hit the last change in the array then replace with the temp value
+				if ((j - (int)gcd) < 0) {
+					arr[j] = temp;
+				}
+				else
+					arr[j] = arr[j - gcd];	//else swap with gcd distance
+				j = j - gcd;
+			}
+			//PrintArray(arr, length);	//for debugging
+		}
 	}
 	else {
 		std::cout << "UNDEFINED rotation type is selected" << std::endl;
@@ -82,10 +141,10 @@ int main() {
 	//sizeof() -> how many bits needed to represent entire array
 	unsigned int arr_length = sizeof(arr) / sizeof(arr[0]);
 
-	//-------------Method -1: Rotation using temporary array----------//
+	//-------------Method - 1: Rotation using temporary array----------//
 	std::cout << "The input Array is: " << std::endl;
 	PrintArray(arr, arr_length);
-	const int number_of_element_to_rotate = 2;
+	int number_of_element_to_rotate = 2;
 	std::cout << "Rotation using temporary array" << std::endl;
 	std::cout << number_of_element_to_rotate << " element left rotation is applied: " << std::endl;
 	RotationUsingTempArray(arr, arr_length, number_of_element_to_rotate, ROTATION_TYPE::LEFT_ROTATION);
@@ -94,7 +153,7 @@ int main() {
 	RotationUsingTempArray(arr, arr_length, number_of_element_to_rotate, ROTATION_TYPE::RIGHT_ROTATION);
 	PrintArray(arr, arr_length);
 
-	//-------------Method -2: Rotate one by one----------//
+	//-------------Method - 2: Rotate one by one----------//
 	std::cout << "The input Array is: " << std::endl;
 	PrintArray(arr, arr_length);
 	std::cout << "Rotate one by one" << std::endl;
@@ -105,7 +164,20 @@ int main() {
 	RotateOneByOne(arr, arr_length, ROTATION_TYPE::RIGHT_ROTATION);
 	PrintArray(arr, arr_length);
 
+	//-------------Method - 3: Rotation using juggling algorithm----------//
+	int arr_1[] = { 1,2,3,4,5,6,7,8,9,10,11,12 };
+	arr_length = sizeof(arr_1) / sizeof(arr_1[0]);
+	number_of_element_to_rotate = 3;
 
+	std::cout << "The input Array is: " << std::endl;
+	PrintArray(arr_1, arr_length);
+	std::cout << "Rotate Using Juggling Algorithm" << std::endl;
+	std::cout << "Left Rotation" << std::endl;
+	RotationUsingJugglingAlgorithm(arr_1, arr_length, number_of_element_to_rotate, ROTATION_TYPE::LEFT_ROTATION);
+	PrintArray(arr_1, arr_length);
+	std::cout << "Right Rotation" << std::endl;
+	RotationUsingJugglingAlgorithm(arr_1, arr_length, number_of_element_to_rotate, ROTATION_TYPE::RIGHT_ROTATION);
+	PrintArray(arr_1, arr_length);
 
 	system("pause");
 	return 0;
