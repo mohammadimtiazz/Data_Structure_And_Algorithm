@@ -81,8 +81,6 @@ int main() {
 	int arr[] = { 1,2,3,4,5,6,7 };
 	//sizeof() -> how many bits needed to represent entire array
 	unsigned int arr_length = sizeof(arr) / sizeof(arr[0]);
-
-	//-------------Method -1: Rotation using temporary array----------//
 	std::cout << "The input Array is: " << std::endl;
 	PrintArray(arr, arr_length);
 	const int number_of_element_to_rotate = 2;
@@ -94,9 +92,6 @@ int main() {
 	RotationUsingTempArray(arr, arr_length, number_of_element_to_rotate, ROTATION_TYPE::RIGHT_ROTATION);
 	PrintArray(arr, arr_length);
 
-	//-------------Method -2: Rotate one by one----------//
-	std::cout << "The input Array is: " << std::endl;
-	PrintArray(arr, arr_length);
 	std::cout << "Rotate one by one" << std::endl;
 	std::cout << "Left Rotation" << std::endl;
 	RotateOneByOne(arr, arr_length, ROTATION_TYPE::LEFT_ROTATION);
@@ -104,8 +99,6 @@ int main() {
 	std::cout << "Right Rotation" << std::endl;
 	RotateOneByOne(arr, arr_length, ROTATION_TYPE::RIGHT_ROTATION);
 	PrintArray(arr, arr_length);
-
-
 
 	system("pause");
 	return 0;
