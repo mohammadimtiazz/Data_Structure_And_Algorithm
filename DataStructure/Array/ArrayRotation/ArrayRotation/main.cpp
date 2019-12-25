@@ -183,6 +183,62 @@ void RotationUsingReversalAlgorithm(int *arr, unsigned int length, const int num
 
 }
 
+//This function swaps d number of elements starting at index start_1 and with d number of elements starting at index start_2
+void BlockSwap(int *arr, unsigned int start_1, unsigned int start_2, unsigned int number_of_swap) {
+
+	for (unsigned int i = 0; i < number_of_swap; i++) {
+		int temp = arr[start_1 + i];
+		arr[start_1 + i] = arr[start_2 + i];
+		arr[start_2 + i] = temp;
+	}
+}
+
+void RotationUsingBlockSwapAlgorithm(int *arr, unsigned int length, const int num_of_element_to_rotate, ROTATION_TYPE type) {
+	/*
+	Initialize A = arr[0..d-1] and B = arr[d..n-1]
+	1) Do following until size of A is equal to size of B
+
+	  a)  If A is shorter, divide B into Bl and Br such that Br is of same
+		   length as A. Swap A and Br to change ABlBr into BrBlA. Now A
+		   is at its final place, so recur on pieces of B.
+
+	   b)  If A is longer, divide A into Al and Ar such that Al is of same
+		   length as B Swap Al and B to change AlArB into BArAl. Now B
+		   is at its final place, so recur on pieces of A.
+
+	2)  Finally when A and B are of equal size, block swap them.
+	*/
+
+	if (type == ROTATION_TYPE::LEFT_ROTATION) {
+
+		if ((num_of_element_to_rotate == 0) || (num_of_element_to_rotate == length)) {
+			return;
+		}
+
+		if (num_of_element_to_rotate == (length - num_of_element_to_rotate)) {
+			BlockSwap(arr, 0, (length - num_of_element_to_rotate), num_of_element_to_rotate);
+			return;
+		}
+
+		if (num_of_element_to_rotate < (length - num_of_element_to_rotate)) {
+			BlockSwap(arr, 0, (length - num_of_element_to_rotate), num_of_element_to_rotate);
+			//PrintArray(arr, length);
+			RotationUsingBlockSwapAlgorithm(arr, (length - num_of_element_to_rotate), num_of_element_to_rotate, ROTATION_TYPE::LEFT_ROTATION);
+		}
+		else {
+			BlockSwap(arr, 0, num_of_element_to_rotate, (length - num_of_element_to_rotate));
+			//PrintArray(arr, length);
+			RotationUsingBlockSwapAlgorithm(arr + length - num_of_element_to_rotate, num_of_element_to_rotate, ((2 * num_of_element_to_rotate) - length), ROTATION_TYPE::LEFT_ROTATION);
+		}
+	}
+	else if (type == ROTATION_TYPE::RIGHT_ROTATION) {
+		//Implemented in future
+	}
+	else {
+		std::cout << "UNDEFINED rotation type is selected" << std::endl;
+	}
+}
+
 int main() {
 	int arr[] = { 1,2,3,4,5,6,7 };
 	//sizeof() -> how many bits needed to represent entire array
@@ -236,6 +292,9 @@ int main() {
 	RotationUsingReversalAlgorithm(arr_1, arr_length, 3, ROTATION_TYPE::RIGHT_ROTATION);
 	PrintArray(arr_1, arr_length);
 
+	//swap(arr_1, 0, 7, 3);
+	RotationUsingBlockSwapAlgorithm(arr_1, arr_length, 7, ROTATION_TYPE::LEFT_ROTATION);
+	PrintArray(arr_1, arr_length);
 	system("pause");
 	return 0;
 }
