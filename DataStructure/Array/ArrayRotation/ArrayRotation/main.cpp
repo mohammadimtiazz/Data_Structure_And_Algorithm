@@ -239,6 +239,13 @@ void RotationUsingBlockSwapAlgorithm(int *arr, unsigned int length, const int nu
 	}
 }
 
+void CyclicallyRotation(int *arr, unsigned int length) {
+	int temp = arr[length - 1], i;
+	for (i = length - 1; i > 0; i--)
+		arr[i] = arr[i - 1];
+	arr[0] = temp;
+}
+
 int main() {
 	int arr[] = { 1,2,3,4,5,6,7 };
 	//sizeof() -> how many bits needed to represent entire array
@@ -247,12 +254,16 @@ int main() {
 	//-------------Method - 1: Rotation using temporary array----------//
 	std::cout << "The input Array is: " << std::endl;
 	PrintArray(arr, arr_length);
-	int number_of_element_to_rotate = 2;
+	int number_of_element_to_rotate = 1;
 	std::cout << "Rotation using temporary array" << std::endl;
 	std::cout << number_of_element_to_rotate << " element left rotation is applied: " << std::endl;
 	RotationUsingTempArray(arr, arr_length, number_of_element_to_rotate, ROTATION_TYPE::LEFT_ROTATION);
 	PrintArray(arr, arr_length);
 	std::cout << number_of_element_to_rotate << " element right rotation is applied: " << std::endl;
+	RotationUsingTempArray(arr, arr_length, number_of_element_to_rotate, ROTATION_TYPE::RIGHT_ROTATION);
+	PrintArray(arr, arr_length);
+	RotationUsingTempArray(arr, arr_length, number_of_element_to_rotate, ROTATION_TYPE::RIGHT_ROTATION);
+	PrintArray(arr, arr_length);
 	RotationUsingTempArray(arr, arr_length, number_of_element_to_rotate, ROTATION_TYPE::RIGHT_ROTATION);
 	PrintArray(arr, arr_length);
 
@@ -293,7 +304,12 @@ int main() {
 	PrintArray(arr_1, arr_length);
 
 	//swap(arr_1, 0, 7, 3);
-	RotationUsingBlockSwapAlgorithm(arr_1, arr_length, 7, ROTATION_TYPE::LEFT_ROTATION);
+	//RotationUsingBlockSwapAlgorithm(arr_1, arr_length, 7, ROTATION_TYPE::LEFT_ROTATION);
+	//PrintArray(arr_1, arr_length);
+
+	CyclicallyRotation(arr_1, arr_length);
+	PrintArray(arr_1, arr_length);
+	CyclicallyRotation(arr_1, arr_length);
 	PrintArray(arr_1, arr_length);
 	system("pause");
 	return 0;
