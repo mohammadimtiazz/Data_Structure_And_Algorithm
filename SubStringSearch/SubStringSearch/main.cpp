@@ -1,6 +1,7 @@
 #include <iostream>
 #include <stdlib.h>
 #include <string>
+#include <vector>
 
 using namespace std;
 
@@ -109,12 +110,88 @@ int BruteSearch(string pattern, string text) {
 }
 
 
-int main() {
-	string pattern = "26535";
-	string text = "265353141592653589793";
 
-	//string pattern = "abc";
-	//string text = "babcdeabc";
+vector<int> LongestSuffixPreffixTable(string pattern) {
+	long patterLen = pattern.length();
+	vector<int> table(patterLen, 0);
+
+	long j = 0;
+
+	for (int i = 1; i < patterLen; i++) {
+
+		//Matched condition
+		if (pattern[j] == pattern[i]) {
+			table[i] = j + 1;
+			j++;
+		}
+		else {
+			//Non-match condition
+			while (j > 0) {
+				j = j - 1;
+				j = table[j];
+				if (pattern[j] == pattern[i]) {
+					table[i] = j + 1;
+					break;
+				}
+			}
+		}
+	}
+
+	return table;
+}
+
+
+int KnuthMorrisPrattSubStringSearch(string text, string pattern, vector<int> &table) {
+	signed int i = 0, j = 0; 
+	long matchLen = 0;
+	while (i < text.length()){
+		if (text[i] != pattern[j]) {
+
+			//move backward at table
+			while ((text[i] != pattern[j])) {
+				j = j - 1;
+				if (j < 0) {
+					j = 0;
+					break;
+				}
+				else
+					j = table[j];
+			}
+			//If this while loop can't find any match that means there are no prefix to match for next one
+			i++; // so look for next pattern match
+
+			//But if got matched in prefix or suffix
+			if ((text[i] == pattern[j])) {
+				j++;
+			}
+			else {
+				j = 0;
+			}
+
+		}
+		else {		// move forward with text and table pattern
+			i++;
+			j++;
+		}
+
+		if (j == pattern.length())
+			cout << "found a match at index " << i+ 1 - j << endl;
+	}
+
+
+	return 1;
+}
+
+
+
+
+
+int main() {
+	//string pattern = "26535";
+	//string text = "265353141592653589793";
+
+	string pattern = "abcaby";
+	string text = "abxabcabcaby";
 
 	cout << "Given pattern is ::: " << pattern << endl;
 	cout << "Given text is :::: " << text << endl;
@@ -127,6 +204,15 @@ int main() {
 	cout << "Executing pattern search in text using Rabin-karp method" << endl;
 	long key = 997;		//this key have to be a large random prime number
 	RobinKarpSubStringSearch(text,pattern,key);
+
+
+	cout << "Executing pattern search in text using Knuth–Morris–Pratt(KMP) method" << endl;
+	vector<int> Table = LongestSuffixPreffixTable(pattern);
+
+	for (int i = 0; i < Table.size(); i++)
+		cout << Table[i] << " ";
+	KnuthMorrisPrattSubStringSearch(text, pattern, Table);
+	cout << endl;
 
 	return 1;
 }
