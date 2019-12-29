@@ -106,7 +106,7 @@ void InsertAfterNode(Node *previous_node, int new_data) {
 }
 
 
-void DeleteNode(Node **head_node_ref, int value) {
+void DeleteNodeWithValue(Node **head_node_ref, int value) {
 	//Creating new nodes
 	Node *temp = NULL, *prev = NULL;
 	//Allocate new node in the heap
@@ -129,9 +129,55 @@ void DeleteNode(Node **head_node_ref, int value) {
 
 	// Search for the value to be deleted, keep track of the 
 	// previous node as we need to change 'prev->next' 
-	while (temp != NULL and temp->data != value) {
+	while (temp != NULL && temp->data != value) {
 		prev = temp;
 		temp = temp->next;
+	}
+
+	//after traverse through all the node if the value can't be located
+	if (temp == NULL) {
+		cout << "The value " << value <<" don't exist in the Linked List" << endl;
+		return;
+	}
+
+	//un-link the node from linked List
+	prev->next = temp->next;
+	free(temp);
+}
+
+void DeleteNodeWithPosition(Node **head_node_ref, int position) {
+	//Creating new nodes
+	Node *temp = NULL, *prev = NULL;
+	//Allocate new node in the heap
+	temp = new Node();
+	prev = new Node();
+
+	int position_count = 0;
+	temp = *head_node_ref;
+
+	//if head_node_ref is NULL
+	if (temp == NULL) {
+		cout << "The input node can not be NULL" << endl;
+		return;
+	}
+
+	if (temp != NULL && position == 0) {
+		*head_node_ref = temp->next;
+		free(temp);
+		return;
+	}
+
+	// Search for the value to be deleted, keep track of the 
+	// previous node as we need to change 'prev->next' 
+	while (temp != NULL && position_count != position) {
+		prev = temp;
+		temp = temp->next;
+		position_count++;
+	}
+
+	if (temp == NULL) {
+		cout << "The position " << position << " doesn't exist in the LinkedList" << endl;
+		return;
 	}
 
 	//un-link the node from linked List
@@ -179,10 +225,23 @@ int main() {
 	InsertAfterNode(head->next->next->next->next, 5);
 	PrintLinkedList(head);
 
-	DeleteNode(&head, 7);
+	DeleteNodeWithValue(&head, 7);
 	PrintLinkedList(head);
 
-	DeleteNode(&head, 10);
+	//This value doesn't exist
+	DeleteNodeWithValue(&head, 10);
+
+	DeleteNodeWithPosition(&head, 2);
+	PrintLinkedList(head);
+
+	DeleteNodeWithPosition(&head, 0);
+	PrintLinkedList(head);
+
+	DeleteNodeWithPosition(&head, 5);
+	PrintLinkedList(head);
+
+	//This position doesn't exist
+	DeleteNodeWithPosition(&head, 6);
 
 	return 0;
 }
