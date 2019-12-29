@@ -106,6 +106,39 @@ void InsertAfterNode(Node *previous_node, int new_data) {
 }
 
 
+void DeleteNode(Node **head_node_ref, int value) {
+	//Creating new nodes
+	Node *temp = NULL, *prev = NULL;
+	//Allocate new node in the heap
+	temp = new Node();
+	prev = new Node();
+
+	temp = *head_node_ref;
+	//if head_node_ref is NULL
+	if (temp == NULL) {
+		cout << "The input node can not be NULL" << endl;
+		return;
+	}
+
+	//If the value exist at the first node
+	if (temp != NULL && temp->data == value) {
+		*head_node_ref = temp->next;	//move head ref to temp->next
+		free(temp);	//free temp
+		return;
+	}
+
+	// Search for the value to be deleted, keep track of the 
+	// previous node as we need to change 'prev->next' 
+	while (temp != NULL and temp->data != value) {
+		prev = temp;
+		temp = temp->next;
+	}
+
+	//un-link the node from linked List
+	prev->next = temp->next;
+	free(temp);
+}
+
 int main() {
 	//Creating new nodes
 	Node *head = NULL;
@@ -145,6 +178,11 @@ int main() {
 
 	InsertAfterNode(head->next->next->next->next, 5);
 	PrintLinkedList(head);
+
+	DeleteNode(&head, 7);
+	PrintLinkedList(head);
+
+	DeleteNode(&head, 10);
 
 	return 0;
 }
