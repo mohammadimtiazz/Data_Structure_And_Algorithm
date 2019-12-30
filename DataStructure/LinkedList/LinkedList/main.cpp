@@ -185,6 +185,77 @@ void DeleteNodeWithPosition(Node **head_node_ref, int position) {
 	free(temp);
 }
 
+unsigned int LengthOfLinkedList(Node **head_node_ref) {
+	unsigned int count = 0;
+	Node *temp = NULL;
+	temp = new Node();
+	temp = *head_node_ref;
+
+	if (temp == NULL) {
+		return count = 0;
+	}
+	else {
+		while (temp != NULL) {
+			temp = temp->next;
+			count++;
+		}
+	}
+
+	return count;
+}
+
+void SwapNodes(Node **head_node_ref, int x, int y) {
+	// Nothing to do if x and y are same
+	if (x == y)
+		return;
+
+	Node *curr_x = NULL;
+	Node *prev_x = NULL;
+	Node *curr_y = NULL;
+	Node *prev_y = NULL;
+
+
+	curr_x = new Node();
+	prev_x = new Node();
+	curr_y = new Node();
+	prev_y = new Node();
+
+	// Search for x (keep track of prevX and CurrX) 
+	curr_x = *head_node_ref;
+	while (curr_x != NULL && curr_x->data != x) {
+		prev_x = curr_x;
+		curr_x = curr_x->next;
+	}
+
+	// Search for y (keep track of prevY and CurrY)
+	curr_y = *head_node_ref;
+	while (curr_y != NULL && curr_y->data != y) {
+		prev_y = curr_y;
+		curr_y = curr_y->next;
+	}
+
+	// If either x or y is not present, nothing to do
+	if ((curr_x == NULL) && (curr_y == NULL))
+		return;
+
+	// If x is not head of linked list  
+	if (prev_x != NULL)
+		prev_x->next = curr_y;
+	else // Else make y as new head  
+		*head_node_ref = curr_y;
+
+	// If y is not head of linked list  
+	if (prev_y != NULL)
+		prev_y->next = curr_x;
+	else // Else make x as new head  
+		*head_node_ref = curr_x;
+
+	// Swap next pointers
+	Node *temp = curr_y->next;
+	curr_y->next = curr_x->next;
+	curr_x->next = temp;
+}
+
 int main() {
 	//Creating new nodes
 	Node *head = NULL;
@@ -225,6 +296,9 @@ int main() {
 	InsertAfterNode(head->next->next->next->next, 5);
 	PrintLinkedList(head);
 
+	SwapNodes(&head, 3, 5);
+	PrintLinkedList(head);
+
 	DeleteNodeWithValue(&head, 7);
 	PrintLinkedList(head);
 
@@ -242,6 +316,10 @@ int main() {
 
 	//This position doesn't exist
 	DeleteNodeWithPosition(&head, 6);
+
+	cout << "The current length of the Linked List is " << LengthOfLinkedList(&head) << endl;
+
+
 
 	return 0;
 }
